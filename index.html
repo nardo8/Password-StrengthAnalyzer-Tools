@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PassGuard — Password Strength Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">Password Strength<span>Analyzer Tools</span></div>
+  <div class="nav-badge"></div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">Real-time password analysis</div>
+  <h1>How strong is<br>your <em>password</em>?</h1>
+  <p class="hero-sub">Instant entropy analysis, crack time estimation, and a secure password generator — all client-side, nothing leaves your browser.</p>
+</section>
+
+<!-- Analyzer Card -->
+<div class="card-wrap">
+  <div class="card">
+
+    <div class="input-group">
+      <label class="input-label" for="pw-input">Enter password</label>
+      <input class="pw-input" id="pw-input" type="password" placeholder="Type or paste your password…" autocomplete="off" spellcheck="false"/>
+      <button class="pw-toggle" id="pw-toggle" aria-label="Toggle visibility">
+        <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-meta">
+        <span class="bar-label" id="bar-label">Waiting…</span>
+        <span class="entropy-pill" id="entropy-pill">0 bits</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+    </div>
+
+    <p class="checks-title">Requirements</p>
+    <div class="checks-grid">
+      <div class="check-item" id="chk-len"><span class="check-dot"></span>12+ characters</div>
+      <div class="check-item" id="chk-upper"><span class="check-dot"></span>Uppercase letter</div>
+      <div class="check-item" id="chk-lower"><span class="check-dot"></span>Lowercase letter</div>
+      <div class="check-item" id="chk-num"><span class="check-dot"></span>Number (0–9)</div>
+      <div class="check-item" id="chk-sym"><span class="check-dot"></span>Symbol (!@#…)</div>
+      <div class="check-item" id="chk-unique"><span class="check-dot"></span>High uniqueness</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="s-len">0</div><div class="stat-lbl">Length</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-cs">0</div><div class="stat-lbl">Charset</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-uniq">0</div><div class="stat-lbl">Unique</div></div>
+    </div>
+
+    <div class="crack-card">
+      <div class="crack-icon" id="crack-icon">⏱</div>
+      <div>
+        <div class="crack-meta-lbl">Estimated crack time (10B guesses/sec)</div>
+        <div class="crack-meta-val" id="crack-val">—</div>
+      </div>
+    </div>
+
+    <div class="tip" id="tip-box"><strong>Tip:</strong> Start typing above to analyze your password in real time.</div>
+
+  </div>
+</div>
+
+<!-- Generator -->
+<div class="gen-section">
+  <p class="section-title">// Password Generator</p>
+  <div class="gen-card">
+    <div class="gen-output">
+      <div class="gen-pw" id="gen-pw">Click generate to create a password</div>
+      <button class="gen-copy" id="gen-copy">Copy</button>
+    </div>
+
+    <div class="gen-controls">
+      <div class="ctrl-group">
+        <label>Length <span id="len-out">16</span></label>
+        <input type="range" id="gen-len" min="8" max="64" value="16" step="1"/>
+      </div>
+      <div class="ctrl-group">
+        <label>Entropy <span id="gen-entropy-out">—</span></label>
+        <div style="height:4px;background:var(--bg3);border-radius:99px;border:1px solid var(--border);overflow:hidden;margin-top:8px;">
+          <div id="gen-ent-bar" style="height:100%;width:0%;background:var(--accent);transition:width 0.4s,background 0.3s;border-radius:99px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <label class="toggle-item"><input type="checkbox" id="g-upper" checked/> Uppercase (A–Z)</label>
+      <label class="toggle-item"><input type="checkbox" id="g-lower" checked/> Lowercase (a–z)</label>
+      <label class="toggle-item"><input type="checkbox" id="g-num"   checked/> Numbers (0–9)</label>
+      <label class="toggle-item"><input type="checkbox" id="g-sym"   checked/> Symbols (!@#…)</label>
+    </div>
+
+    <button class="gen-btn" id="gen-btn">Generate Strong Password</button>
+  </div>
+</div>
+
+<!-- Tips -->
+<div class="tips-section">
+  <p class="section-title">// Best practices</p>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-card-icon">📏</div>
+      <div class="tip-card-title">Length beats complexity</div>
+      <div class="tip-card-body">A 20-character lowercase passphrase is harder to crack than an 8-character complex password. Every extra character multiplies the search space.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-icon">🎲</div>
+      <div class="tip-card-title">Use a passphrase</div>
+      <div class="tip-card-body">Four random words strung together (e.g. "correct-horse-battery-staple") are both memorable and extremely high-entropy.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-icon">🔐</div>
+      <div class="tip-card-title">Use a password manager</div>
+      <div class="tip-card-body">Tools like Bitwarden, 1Password, or KeePass let you use a unique, strong password for every site without memorizing any of them.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-icon">🚫</div>
+      <div class="tip-card-title">Never reuse passwords</div>
+      <div class="tip-card-body">A breach on one site instantly compromises every account sharing that password. One site, one password — no exceptions.</div>
+    </div>
+  </div>
+</div>
+
+<footer>PassGuard &copy; 2025 — All analysis is done locally. No passwords are transmitted or stored.</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
